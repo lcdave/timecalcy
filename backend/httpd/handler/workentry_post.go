@@ -3,31 +3,34 @@ package handler
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"timecalcy/database"
 	models "timecalcy/models/request"
 )
 
-func WorkentryPost() func(c *gin.Context) {
-	fmt.Println("WorkentryPost")
+func WorkEntryPost(c *gin.Context) {
+	fmt.Println("WorkEntryPost")
+
+	var workEntryRequest models.WorkEntry
+
+	if err := c.ShouldBindJSON(&workEntryRequest); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// create workEntry
+	workEntry := models.WorkEntry{
+		StartTime: workEntryRequest.StartTime,
+		EndTime:   workEntryRequest.EndTime,
+		BreakTime: workEntryRequest.BreakTime,
+	}
 
 	db := database.Init()
 
-	// create workentry
-	workentry := models.WorkEntry{
-		StartTime: "2020-01-01T00:00:00Z",
-		EndTime:   "2020-01-01T00:00:00Z",
-		BreakTime: "2020-01-01T00:00:00Z",
+	if err := db.Create(&workEntry).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
-	// insert workentry
-	res := db.Create(&workentry)
-
-	fmt.Println("result: ", res)
-
-	// return status code 200
-	return func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "WorkentryPost",
-		})
-	}
+	c.JSON(http.StatusOK, gin.H{"data": workEntry})
 }

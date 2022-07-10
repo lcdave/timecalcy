@@ -4,28 +4,28 @@
       <div>
         <label for="startTime" class="block mb-[10px]">Start</label>
         <input
-          v-model="startTime"
-          name="start"
-          type="time"
-          class="py-1 px-4 rounded-xl block"
+            v-model="startTime"
+            name="start"
+            type="time"
+            class="py-1 px-4 rounded-xl block"
         />
       </div>
       <div>
         <label for="endTime" class="block mb-[10px]">End</label>
         <input
-          v-model="endTime"
-          name="end"
-          type="time"
-          class="py-1 px-4 rounded-xl block"
+            v-model="endTime"
+            name="end"
+            type="time"
+            class="py-1 px-4 rounded-xl block"
         />
       </div>
       <div>
         <label for="breakTime" class="block mb-[10px]">Break</label>
         <input
-          v-model="breakTime"
-          name="breakTime"
-          type="time"
-          class="py-1 px-4 rounded-xl block"
+            v-model="breakTime"
+            name="breakTime"
+            type="time"
+            class="py-1 px-4 rounded-xl block"
         />
       </div>
     </div>
@@ -67,12 +67,12 @@ export default {
       let breakTm = this.breakTime.split(":");
 
       const startSeconds =
-        this.hoursToSeconds(start[0]) + this.minutesToSeconds(start[1]);
+          this.hoursToSeconds(start[0]) + this.minutesToSeconds(start[1]);
 
       const breakSeconds =
-        this.hoursToSeconds(breakTm[0]) + this.minutesToSeconds(breakTm[1]);
+          this.hoursToSeconds(breakTm[0]) + this.minutesToSeconds(breakTm[1]);
       const endSeconds =
-        this.hoursToSeconds(end[0]) + this.minutesToSeconds(end[1]);
+          this.hoursToSeconds(end[0]) + this.minutesToSeconds(end[1]);
 
       let difference = endSeconds - startSeconds - breakSeconds;
 
@@ -91,10 +91,15 @@ export default {
       return `${hours}h ${minutes}m`;
     },
     async saveEntry() {
-      await $fetch( 'https://localhost:8080/workentry/create', {
-        method: 'POST',
-        body: "huhu"
-      } );
+      await $fetch('http://localhost:8080/workentry/create', {
+            method: 'POST',
+            body: {
+              StartTime: this.startTime,
+              EndTime: this.endTime,
+              BreakTime: this.breakTime,
+            },
+          }
+      );
     }
   },
 };

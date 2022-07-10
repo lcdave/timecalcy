@@ -15,18 +15,22 @@ func main() {
 	// for more ideas, see: https://developer.github.com/v3/#cross-origin-resource-sharing
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"https://localhost:3000", "http://localhost:3000"},
-		AllowMethods:     []string{"PUT", "PATCH", "GET", "POST", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposeHeaders:    []string{"Link"},
+		AllowCredentials: false,
 		MaxAge:           12 * time.Hour,
 	}))
 
-	// init db connection
 	db := database.Init()
 	println("Connected to database", db)
 
 	r.GET("/product", handler.ProductGet())
-	r.POST("/workentry/create", handler.WorkentryPost())
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	r.POST("/workentry/create", handler.WorkEntryPost)
+
+	err := r.Run(":8080")
+
+	if err != nil {
+		return
+	}
 }
