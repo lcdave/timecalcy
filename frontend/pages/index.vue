@@ -33,6 +33,9 @@
       <label for="result" class="block mb-[10px]">Worked</label>
       <div>{{ result }}</div>
     </div>
+    <button @click="saveEntry" class="px-4 py-2 rounded-xl bg-blue-500 text-white">
+      Save
+    </button>
   </div>
 </template>
 
@@ -87,6 +90,12 @@ export default {
 
       return `${hours}h ${minutes}m`;
     },
+    async saveEntry() {
+      await $fetch( 'https://localhost:8080/workentry/create', {
+        method: 'POST',
+        body: "huhu"
+      } );
+    }
   },
 };
 </script>
