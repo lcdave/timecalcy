@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"time"
 	"timecalcy/database"
+	"timecalcy/httpd/controller"
 	"timecalcy/httpd/handler"
 )
 
@@ -25,8 +26,12 @@ func main() {
 	db := database.Init()
 	println("Connected to database", db)
 
+	workEntryCtrl := new(controller.WorkEntry)
+
 	r.GET("/product", handler.ProductGet())
-	r.POST("/workentry/create", handler.WorkEntryPost)
+	r.POST("/workentry/create", func(c *gin.Context) {
+		workEntryCtrl.Post(c)
+	})
 
 	err := r.Run(":8080")
 
